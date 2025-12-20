@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link ,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import FilterPanel from "../Filter/FilterPanel";
 import Footer from "../Footer/Footer";
@@ -22,7 +22,7 @@ import teslaImg from "../assets/cars/tesla.jpg";
 import fordImg from "../assets/cars/ford.jpg";
 import hondaImg from "../assets/cars/honda.jpg";
 
-/* ==== Brands data ==== */
+/* ==== Data ==== */
 const BRANDS = [
   { name: "Audi", src: audi },
   { name: "BMW", src: bmw },
@@ -36,13 +36,7 @@ const BRANDS = [
   { name: "Jaguar", src: jaguar },
 ];
 
-/* slug helper */
-function slugify(name) {
-  return name.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
-}
-
-/* Recommended cars data */
-const cars = [
+const CARS = [
   {
     name: "Tesla Model 3 Standard Range Plus",
     price: "Rs.56,690",
@@ -75,13 +69,16 @@ const cars = [
   },
 ];
 
-/* RecommendedCars component */
+/* ==== Helper ==== */
+const slugify = (name) => name.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+
+/* ==== Recommended Cars Component ==== */
 const RecommendedCars = () => (
-  <div className="recommended-cars">
+  <section className="recommended-cars">
     <h2>Recommended Cars</h2>
     <div className="car-cards">
-      {cars.map((car, index) => (
-        <div className="car-card" key={index}>
+      {CARS.map((car, idx) => (
+        <div className="car-card" key={idx}>
           <span className="new-badge">New</span>
           <img src={car.img} alt={car.name} />
           <h3>{car.name}</h3>
@@ -96,39 +93,35 @@ const RecommendedCars = () => (
         </div>
       ))}
     </div>
-  </div>
+  </section>
 );
 
+/* ==== Main Homepage Component ==== */
 export default function CartrizoHomepage() {
   const navigate = useNavigate();
-  const brandsRowRef = useRef(null);
+  const brandsRef = useRef(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-
-  const scrollLeft = () => {
-    brandsRowRef.current?.scrollBy({ left: -200, behavior: "smooth" });
-  };
-
-  const scrollRight = () => {
-    brandsRowRef.current?.scrollBy({ left: 200, behavior: "smooth" });
+  const scrollBrands = (direction) => {
+    if (brandsRef.current) {
+      brandsRef.current.scrollBy({ left: direction * 200, behavior: "smooth" });
+    }
   };
 
   return (
     <div className="cartrizo-root">
+
       {/* Side Menu */}
       <div className={`side-menu ${menuOpen ? "open" : ""}`}>
         <button className="close-btn" onClick={toggleMenu}>✖</button>
         <h2 className="menu-title">Cartrizo</h2>
         <ul className="menu-items">
-          <li>🏠 Home</li>
-          <li>🚗 New cars</li>
-          <li>🚘 Used cars</li>
-          <li>💰 Sell cars</li>
-          <li>❤️ Favourites</li>
-          <li>⭐ Rate us</li>
+          {["🏠 Home", "🚗 New cars", "🚘 Used cars", "💰 Sell cars", "❤️ Favourites", "⭐ Rate us"].map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
         </ul>
         <div className="menu-footer">
           <p>TOLL FREE NUMBER</p>
@@ -139,10 +132,7 @@ export default function CartrizoHomepage() {
       {/* Header */}
       <header className="topbar">
         <div className="left-group">
-          <button
-            className={`hamburger ${menuOpen ? "open" : ""}`}
-            onClick={toggleMenu}
-          >
+          <button className="hamburger" onClick={toggleMenu}>
             <span></span><span></span><span></span>
           </button>
           <div className="brand">
@@ -151,47 +141,39 @@ export default function CartrizoHomepage() {
           </div>
         </div>
         <nav className="topnav">
-          <button className="topnav-n">HOME</button>
-          <button className="topnav-n">ABOUT US</button>
-          <button className="topnav-n" onClick={() => navigate("/signup")}>SIGNUP</button>
-          <button className="topnav-n" onClick={() => navigate("/login")}>LOGIN</button>
+          {[
+            { name: "HOME" },
+            { name: "ABOUT US" },
+            { name: "SIGNUP", action: () => navigate("/signup") },
+            { name: "LOGIN", action: () => navigate("/login") },
+          ].map((nav, idx) => (
+            <button key={idx} className="topnav-n" onClick={nav.action}>{nav.name}</button>
+          ))}
         </nav>
       </header>
 
-      {/* Search Bar */}
-      <div className="search-wrap">
-        <div className="search">
-          <input placeholder="Search for your dream car" />
-          <button className="search-btn">🔍</button>
-          <button className="search-btn" onClick={() => setShowFilter(true)}>🔽 Filter</button>
-        </div>
-      </div>
+      
 
       {/* Filter Panel */}
       <FilterPanel isOpen={showFilter} onClose={() => setShowFilter(false)} />
 
       {/* Hero Section */}
-      <main className="hero-container">
-        <div className="hero-card">
-          <div className="hero-left">
-            <img src={hero} alt="car hero" className="hero-image" />
-          </div>
-          <div className="hero-right">
-            <div className="promo-line">Drive with confidence <br /> Buy with trust.</div>
-            <div className="promo-badge">Welcome to Cartrizo</div>
-            <div className="promo-line small">Ranges Starts At</div>
-            <div className="price-badge">₹ 3 LAKH /-</div>
+      <div className="home">
+        <div className="hero-container">
+          <img src={hero} alt="Cars" className="hero-image" />
+          <div className="overlay"></div>
+          <div className="search-bar-container">
+            <input type="text" placeholder="Search" className="search-input" />
+             <button className="search-btn" onClick={() => setShowFilter(true)}>🔽 Filter</button>
           </div>
         </div>
-      </main>
+      </div>
 
-      {/* Explore Section */}
+      {/* Explore Brands */}
       <section className="explore">Explore By Brand</section>
-
-      {/* Brands */}
       <section className="brands-shell">
         <div className="brands-inner">
-          <div className="brands-row" ref={brandsRowRef}>
+          <div className="brands-row" ref={brandsRef}>
             {BRANDS.map((b, i) => (
               <Link to={`/brand/${slugify(b.name)}`} className="brand-card" key={i}>
                 <div className="brand-card-inner">
