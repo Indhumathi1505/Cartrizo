@@ -119,10 +119,16 @@ export default function CartrizoHomepage() {
         <button className="close-btn" onClick={toggleMenu}>✖</button>
         <h2 className="menu-title">Cartrizo</h2>
         <ul className="menu-items">
-          {["🏠 Home", "🚗 New cars", "🚘 Used cars", "💰 Sell cars", "❤️ Favourites", "⭐ Rate us"].map((item, idx) => (
-            <li key={idx}>{item}</li>
-          ))}
-        </ul>
+  <li onClick={() => navigate("/")}>🏠 Home</li>
+  <li>🚗 New cars</li>
+  <li>🚘 Used cars</li>
+  <li>💰 Sell cars</li>
+  <li>❤️ Favourites</li>
+
+  {/* RATE US NAVIGATION */}
+  <li onClick={() => navigate("/rate-us")}>⭐ Rate us</li>
+</ul>
+
         <div className="menu-footer">
           <p>TOLL FREE NUMBER</p>
           <h3>0806 8441 441</h3>
@@ -141,14 +147,12 @@ export default function CartrizoHomepage() {
           </div>
         </div>
         <nav className="topnav">
-          {[
-            { name: "HOME" },
-            { name: "ABOUT US" },
-            { name: "SIGNUP", action: () => navigate("/signup") },
-            { name: "LOGIN", action: () => navigate("/login") },
-          ].map((nav, idx) => (
-            <button key={idx} className="topnav-n" onClick={nav.action}>{nav.name}</button>
-          ))}
+          <button className="topnav-n">HOME</button>
+          <button className="topnav-n" onClick={() => navigate("/about-us")}>ABOUT US</button>
+          <button className="topnav-n" onClick={() => navigate("/signup")}>SIGNUP</button>
+          <button className="topnav-n" onClick={() => navigate("/login")}>LOGIN</button>
+          <button className="topnav-n">PROFILE</button>
+
         </nav>
       </header>
 
