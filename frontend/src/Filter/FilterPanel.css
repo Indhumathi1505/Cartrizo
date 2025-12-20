@@ -1,0 +1,141 @@
+.filter-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.filter-box {
+  width: 380px;
+  background: black;
+  border-radius: 14px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-header h2 {
+  color: #2a8cff;
+  margin: 0;
+}
+
+.close-btn {
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.filter-section {
+  margin-top: 18px;
+}
+
+.filter-section h4 {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #ddd;
+}
+
+/* ---------- PRICE ---------- */
+.price-range {
+  width: 100%;
+}
+
+.price-values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #aaa;
+}
+
+/* ---------- CHECKBOX GRID ---------- */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.checkbox-grid label {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- PILLS ---------- */
+.pill-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill-group span {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #2a8cff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pill-group span:hover {
+  background: #1b6edc;
+}
+
+/* ---------- RADIO ---------- */
+.radio-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  font-size: 13px;
+}
+
+/* ---------- YEAR SELECT ---------- */
+.year-select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: #222;
+  color: white;
+}
+
+/* ---------- ACTION BUTTONS ---------- */
+.filter-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+}
+
+.more-btn {
+  flex: 1;
+  padding: 10px;
+  background: #2a8cff;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.apply-btn {
+  flex: 1;
+  padding: 10px;
+  background: #2a8cff;
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
