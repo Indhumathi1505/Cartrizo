@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import Navbar from "../Home/Navbar";
 import FilterPanel from "../Filter/FilterPanel";
 import Footer from "../Footer/Footer";
 import "./Home.css";
@@ -38,66 +39,41 @@ const BRANDS = [
 
 const CARS = [
   {
-    name: "Tesla Model 3 Standard Range Plus",
+    name: "Tesla Model 3",
     price: "Rs.56,690",
     location: "Florida, USA",
     year: 2020,
-    drive: "Rear-wheel Drive",
+    drive: "RWD",
     fuel: "Electric",
     seats: 5,
     img: teslaImg,
   },
   {
-    name: "Ford F-250 Super Duty",
+    name: "Ford F-250",
     price: "Rs.82,098",
-    location: "Milan, Italy",
+    location: "Italy",
     year: 2021,
-    drive: "Four-wheel Drive",
+    drive: "4WD",
     fuel: "Diesel",
     seats: 5,
     img: fordImg,
   },
   {
-    name: "Honda Pilot Touring 7-Passenger",
+    name: "Honda Pilot",
     price: "Rs.43,735",
-    location: "Caracas, Venezuela",
+    location: "Venezuela",
     year: 2021,
-    drive: "All-wheel Drive",
-    fuel: "Gasoline",
+    drive: "AWD",
+    fuel: "Petrol",
     seats: 7,
     img: hondaImg,
   },
 ];
 
-/* ==== Helper ==== */
-const slugify = (name) => name.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+const slugify = (name) =>
+  name.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
 
-/* ==== Recommended Cars Component ==== */
-const RecommendedCars = () => (
-  <section className="recommended-cars">
-    <h2>Recommended Cars</h2>
-    <div className="car-cards">
-      {CARS.map((car, idx) => (
-        <div className="car-card" key={idx}>
-          
-          <img src={car.img} alt={car.name} />
-          <h3>{car.name}</h3>
-          <p className="price">{car.price}</p>
-          <p className="location">{car.location}</p>
-          <div className="car-info">
-            <span>📅 {car.year}</span>
-            <span>🛞 {car.drive}</span>
-            <span>⛽ {car.fuel}</span>
-            <span>👥 {car.seats}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-);
-
-/* ==== Main Homepage Component ==== */
-export default function CartrizoHomepage() {
+export default function Home() {
   const navigate = useNavigate();
   const brandsRef = useRef(null);
 
@@ -105,94 +81,118 @@ export default function CartrizoHomepage() {
   const [showFilter, setShowFilter] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-  const scrollBrands = (direction) => {
-    if (brandsRef.current) {
-      brandsRef.current.scrollBy({ left: direction * 200, behavior: "smooth" });
-    }
-  };
 
   return (
     <div className="cartrizo-root">
-
-      {/* Side Menu */}
+      {/* SIDE MENU */}
       <div className={`side-menu ${menuOpen ? "open" : ""}`}>
-        <button className="close-btn" onClick={toggleMenu}>✖</button>
+        <button className="close-btn" onClick={toggleMenu}>
+          ✖
+        </button>
         <h2 className="menu-title">Cartrizo</h2>
         <ul className="menu-items">
-  <li onClick={() => navigate("/")}>🏠 Home</li>
-  <li>🚗 New cars</li>
-  <li>🚘 Used cars</li>
-  <li>💰 Sell cars</li>
-  <li>❤️ Favourites</li>
-
-  {/* RATE US NAVIGATION */}
-  <li onClick={() => navigate("/rate-us")}>⭐ Rate us</li>
-</ul>
-
-        <div className="menu-footer">
-          <p>TOLL FREE NUMBER</p>
-          <h3>0806 8441 441</h3>
-        </div>
+          <li>
+            <Link to="/" onClick={toggleMenu}>
+              🏠 Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/new-cars" onClick={toggleMenu}>
+              🚗 New cars
+            </Link>
+          </li>
+          <li>
+            <Link to="/used-cars" onClick={toggleMenu}>
+              🚘 Used cars
+            </Link>
+          </li>
+          <li>
+            <Link to="/sell-cars" onClick={toggleMenu}>
+              💰 Sell cars
+            </Link>
+          </li>
+          <li>
+            <Link to="/favourites" onClick={toggleMenu}>
+              ❤️ Favourites
+            </Link>
+          </li>
+          <li>
+            <Link to="/rate-us" onClick={toggleMenu}>
+              ⭐ Rate us
+            </Link>
+          </li>
+        </ul>
       </div>
 
-      {/* Header */}
-      <header className="topbar">
-        <div className="left-group">
-          <button className="hamburger" onClick={toggleMenu}>
-            <span></span><span></span><span></span>
-          </button>
-          <div className="brand">
-            <img src={hero} alt="logo" className="brand-logo" />
-            <h1 className="brand-title">CARTRIZO</h1>
-          </div>
-        </div>
-        <nav className="topnav">
-          <button className="topnav-n" onClick={() => navigate("/")}>HOME</button>
-          <button className="topnav-n" onClick={() => navigate("/about-us")}>ABOUT US</button>
-          <button className="topnav-n" onClick={() => navigate("/signup")}>SIGNUP</button>
-          <button className="topnav-n" onClick={() => navigate("/login")}>LOGIN</button>
-          <button className="topnav-n" onClick={() => navigate("/profile")}>PROFILE</button>
+      {/* NAVBAR */}
+      <Navbar toggleMenu={toggleMenu} />
 
-        </nav>
-      </header>
-
-      
-
-      {/* Filter Panel */}
+      {/* FILTER PANEL */}
       <FilterPanel isOpen={showFilter} onClose={() => setShowFilter(false)} />
 
-      {/* Hero Section */}
+      {/* HERO SECTION */}
       <div className="home">
         <div className="hero-container">
           <img src={hero} alt="Cars" className="hero-image" />
           <div className="overlay"></div>
           <div className="search-bar-container">
-            <input type="text" placeholder="Search" className="search-input" />
-             <button className="search-btn" onClick={() => setShowFilter(true)}>🔽 Filter</button>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search cars..."
+            />
+            <button
+              className="filter-button"
+              onClick={() => setShowFilter(true)}
+            >
+              🔽 Filter
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Explore Brands */}
-      <section className="explore">Explore By Brand</section>
-      <section className="brands-shell">
-        <div className="brands-inner">
-          <div className="brands-row" ref={brandsRef}>
-            {BRANDS.map((b, i) => (
-              <Link to={`/brand/${slugify(b.name)}`} className="brand-card" key={i}>
-                <div className="brand-card-inner">
-                  <img src={b.src} alt={b.name} className="brand-grid-logo" />
-                </div>
-              </Link>
-            ))}
-          </div>
+      {/* BRANDS SECTION */}
+      <section className="brands-shell" ref={brandsRef}>
+        <h2 className="explore">Explore Brands</h2>
+        <div className="brands-row">
+          {BRANDS.map((b) => (
+            <div className="brand-card" key={b.name}>
+              <div className="brand-card-inner">
+                <Link to={`/brand/${slugify(b.name)}`}>
+                  <img
+                    src={b.src}
+                    alt={b.name}
+                    className="brand-grid-logo"
+                  />
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Recommended Cars */}
-      <RecommendedCars />
+      {/* RECOMMENDED CARS */}
+      <section className="recommended-cars">
+        <h2 className="explore">Recommended Cars</h2>
+        <div className="car-cards">
+          {CARS.map((car) => (
+            <div className="car-card" key={car.name}>
+              <img src={car.img} alt={car.name} />
+              <h3>{car.name}</h3>
+              <p className="price">{car.price}</p>
+              <p className="location">{car.location}</p>
+              <div className="car-info">
+                <span>{car.year}</span>
+                <span>{car.drive}</span>
+                <span>{car.fuel}</span>
+                <span>{car.seats} seats</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* Footer */}
+      {/* FOOTER */}
       <Footer />
     </div>
   );
