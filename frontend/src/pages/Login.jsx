@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import {jwtDecode }from "jwt-decode"; // Make sure to use default import
+import {jwtDecode} from "jwt-decode";
 
 import loginCar from "../assets/car.jpg";
-import googleicon from "../assets/google.png";
 import "./Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");
 
-
-  // CAPTCHA state
+  // CAPTCHA
   const [captcha, setCaptcha] = useState("");
   const [inputCaptcha, setInputCaptcha] = useState("");
 
-  // Generate random CAPTCHA
+  // Generate CAPTCHA
   const generateCaptcha = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let code = "";
@@ -25,63 +23,63 @@ const [password, setPassword] = useState("");
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setCaptcha(code);
-    setInputCaptcha(""); // Clear input when refreshing
+    setInputCaptcha("");
   };
 
-  // Generate CAPTCHA on component mount
   useEffect(() => {
     generateCaptcha();
   }, []);
 
-  // Verify CAPTCHA
-  const verifyCaptcha = () => {
-    if (inputCaptcha === captcha) {
-      alert("CAPTCHA Verified! You can login.");
-      return true;
-    } else {
+  const verifyCaptcha = () => inputCaptcha === captcha;
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    if (!verifyCaptcha()) {
       alert("Incorrect CAPTCHA. Please try again.");
-      generateCaptcha(); // Refresh CAPTCHA on failure
-      return false;
+      generateCaptcha();
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+      alert(data.message);
+      if (res.ok) navigate("/info");
+    } catch (err) {
+      alert("Server error: " + err.message);
     }
   };
 
-  // Handle login button click
-  const handleLogin = async () => {
-  if (!verifyCaptcha()) return;
-
-  const res = await fetch("http://localhost:5000/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: email,
-      password: password
-    })
-  });
-
-  const data = await res.json();
-  alert(data.message);
-
-  if (res.ok) {
-    navigate("/info");
-  }
-};
-
-
-  // Handle Google login success
-  const handleGoogleSuccess = (response) => {
+  const handleGoogleSuccess = async (response) => {
     try {
       const user = jwtDecode(response.credential);
-      console.log("Google User:", user);
+      const res = await fetch("http://localhost:5000/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+        }),
+      });
 
-      alert(`Welcome ${user.name}`);
+      const data = await res.json();
+      alert(data.message);
       navigate("/info");
-    } catch (error) {
-      console.error("JWT Decode Error:", error);
+    } catch (err) {
+      console.error(err);
       alert("Google Sign In Failed");
     }
   };
 
-  // Handle Google login failure
   const handleGoogleError = () => {
     alert("Google Sign In Failed");
   };
@@ -93,9 +91,7 @@ const [password, setPassword] = useState("");
         {/* LEFT PANEL */}
         <div className="login-left">
           <div className="semicircle-shape"></div>
-          <h1>
-            LOGIN <br /> PAGE
-          </h1>
+          <h1>LOGIN <br /> PAGE</h1>
         </div>
 
         {/* MIDDLE IMAGE */}
@@ -106,37 +102,30 @@ const [password, setPassword] = useState("");
         {/* RIGHT FORM */}
         <div className="login-right">
           <h2>Login</h2>
-          <p className="welcome-text">
-            Welcome back! Please enter your details
-          </p>
+          <p className="welcome-text">Welcome back! Please enter your details</p>
 
           <div className="form-group">
             <input
-  type="email"
-  placeholder="Email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-/>
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-<input
-  type="password"
-  placeholder="Password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-/>
-
-
-            {/* CAPTCHA ROW */}
+            {/* CAPTCHA */}
             <div className="captcha-row">
               <div className="captcha-box">
-                {captcha}{" "}
-                <span className="refresh" onClick={generateCaptcha}>
-                  ⟳
-                </span>
+                {captcha} <span className="refresh" onClick={generateCaptcha}>⟳</span>
               </div>
               <input
                 type="text"
-                placeholder="Enter the captcha"
+                placeholder="Enter CAPTCHA"
                 value={inputCaptcha}
                 onChange={(e) => setInputCaptcha(e.target.value)}
               />
@@ -147,7 +136,6 @@ const [password, setPassword] = useState("");
             </Link>
           </div>
 
-          {/* LOGIN BUTTON */}
           <button className="login-btn" onClick={handleLogin}>
             Login
           </button>
@@ -158,7 +146,6 @@ const [password, setPassword] = useState("");
             <span></span>
           </div>
 
-          {/* GOOGLE LOGIN BUTTON */}
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleError}
@@ -168,7 +155,6 @@ const [password, setPassword] = useState("");
             Don’t have an account? <Link to="/signup">Sign up for free</Link>
           </p>
         </div>
-
       </div>
     </div>
   );

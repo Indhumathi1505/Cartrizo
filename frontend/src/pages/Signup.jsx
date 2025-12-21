@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 import carImg from "../assets/car.jpg";
 import "./Signup.css";
@@ -15,36 +15,50 @@ export default function Signup() {
 
   // NORMAL SIGNUP
   const handleSignup = async () => {
-    const res = await fetch("http://localhost:5000/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
+    if (!name || !email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
 
-    const data = await res.json();
-    alert(data.message);
+    try {
+      const res = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    if (res.ok) navigate("/info");
+      const data = await res.json();
+      alert(data.message);
+
+      if (res.ok) navigate("/info");
+    } catch (err) {
+      alert("Server error: " + err.message);
+    }
   };
 
   // GOOGLE SIGNUP
   const handleGoogleSuccess = async (response) => {
-    const user = jwtDecode(response.credential);
+    try {
+      const user = jwtDecode(response.credential);
 
-    await fetch("http://localhost:5000/google-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: user.name,
-        email: user.email,
-      }),
-    });
+      const res = await fetch("http://localhost:5000/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+        }),
+      });
 
-    alert(`Welcome ${user.name}`);
-    navigate("/info");
+      const data = await res.json();
+      alert(data.message);
+      navigate("/info");
+    } catch (err) {
+      console.error(err);
+      alert("Google Sign In Failed");
+    }
   };
 
-  // ✅ FIXED: GOOGLE ERROR HANDLER
   const handleGoogleError = () => {
     alert("Google Sign In Failed");
   };
@@ -71,16 +85,19 @@ export default function Signup() {
             <input
               type="text"
               placeholder="Username"
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <input
               type="email"
               placeholder="Email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
               placeholder="Password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
@@ -102,8 +119,7 @@ export default function Signup() {
           />
 
           <p className="login-text">
-            Already have an account?
-            <Link to="/login"> Login</Link>
+            Already have an account? <Link to="/login">Login</Link>
           </p>
         </div>
       </div>
