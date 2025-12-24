@@ -42,24 +42,24 @@
 .stars {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 40px;
+  gap: 10px;
 }
 
 .star {
-  font-size: 32px;
-  color: #555;
+  font-size: 40px;
   cursor: pointer;
-  transition: transform 0.2s, color 0.2s;
+  color: #ccc;          /* default (unselected) color */
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.star.filled {
+  color:#00aaff;       /* selected stars color (gold) */
 }
 
 .star:hover {
   transform: scale(1.2);
 }
 
-.star.filled {
-  color: #ffffff;
-}
 
 /* Description */
 .rate-desc {

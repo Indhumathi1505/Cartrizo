@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./Home/Home";
 import Signup from "./pages/Signup";
@@ -13,12 +13,13 @@ import UsedCar from "./UsedCars/UsedCar";
 import CarDetails from "./pages/CarDetails";
 
 // Admin components
+import AdminDashboard from "./Admin/Admin";
 import AdminLogin from "./Admin/AdminLogin";
-import AdminDashboard from "./Admin/AdminDashboard";
 
 function App() {
   return (
     <Routes>
+      {/* User routes */}
       <Route path="/" element={<Home />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
@@ -28,12 +29,12 @@ function App() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/sell-cars" element={<SellCar />} />
       <Route path="/used-cars" element={<UsedCar />} />
-
-   {/* ✅ ADD THIS */}
       <Route path="/car/:id" element={<CarDetails />} />
 
       {/* Admin routes */}
-      <Route path="/admin" element={<AdminLogin />} />
+      {/* Redirect /admin → /admin/login */}
+      <Route path="/admin" element={<Navigate to="/admin/login" />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
     </Routes>
   );

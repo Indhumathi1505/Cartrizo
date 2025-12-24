@@ -1,91 +1,93 @@
-/* Container */
-.admin-login-container {
-  display: flex;
-  min-height: 100vh;
-}
+/* AdminLogin.css */
 
-/* Left panel */
-.left-panel {
-  display: none;
-}
-@media (min-width: 768px) {
-  .left-panel {
-    flex: 1;
-    background: linear-gradient(to bottom, #26ff4f, #16a34a);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .left-panel h1 {
-    color: white;
-    font-size: 3rem;
-    font-weight: bold;
-  }
-}
-
-/* Right panel */
-.right-panel {
-  flex: 1;
+/* Container for the entire page */
+.admin-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #111;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #4a90e2, #50e3c2); /* subtle gradient for a modern feel */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.form-container {
-  max-width: 400px;
-  width: 100%;
-  padding: 2rem;
+/* Card that holds the form */
+.admin-card {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 350px;
+  max-width: 90%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-container h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 1.5rem;
+.admin-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-/* Form */
-.login-form {
+/* Title of the card */
+.admin-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Individual input fields */
+.admin-field {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  margin-bottom: 20px;
 }
 
-.login-form label {
-  color: white;
-  margin-bottom: 0.5rem;
-  display: block;
+.admin-field label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
 }
 
-.input-field {
-  width: 100%;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background-color: #1f1f1f;
-  color: white;
-  border: 1px solid #333;
+.admin-field input {
+  padding: 12px 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
   outline: none;
-  transition: all 0.2s;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.input-field:focus {
-  border-color: #26ff4f;
-  box-shadow: 0 0 0 2px rgba(38, 255, 79, 0.3);
+.admin-field input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
 }
 
-.login-btn {
+/* Login button */
+.admin-btn {
   width: 100%;
-  background-color: #26ff4f;
-  color: #111;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  font-weight: bold;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.login-btn:hover {
-  background-color: #16a34a;
+.admin-btn:hover {
+  background-color: #357ab8;
+  transform: translateY(-2px);
+}
+
+/* Responsive tweaks */
+@media (max-width: 400px) {
+  .admin-card {
+    padding: 30px 20px;
+  }
+
+  .admin-title {
+    font-size: 24px;
+  }
 }

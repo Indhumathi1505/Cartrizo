@@ -131,46 +131,62 @@ export default function Home() {
       <FilterPanel isOpen={showFilter} onClose={() => setShowFilter(false)} />
 
       {/* HERO SECTION */}
-      <div className="home">
-        <div className="hero-container">
-          <img src={hero} alt="Cars" className="hero-image" />
-          <div className="overlay"></div>
-          <div className="search-bar-container">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search cars..."
-            />
-            <button
-              className="filter-button"
-              onClick={() => setShowFilter(true)}
-            >
-              🔽 Filter
-            </button>
-          </div>
-        </div>
+<div className="home">
+  <div className="hero-container">
+    <img src={hero} alt="Cars" className="hero-image" />
+    <div className="overlay"></div>
+
+    <div className="hero-content">
+      <h1>
+        Find Your <span>Perfect Car</span><br />
+        Drive with Confidence
+      </h1>
+
+      <p>
+        Browse verified cars from top brands at the best prices near you.
+      </p>
+
+      <div className="hero-search">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search by brand, model or budget"
+        />
+        <button
+          className="filter-button"
+          onClick={() => setShowFilter(true)}
+        >
+          Filters
+        </button>
       </div>
+
+      
+    </div>
+  </div>
+</div>
 
       {/* BRANDS SECTION */}
      
-      <section className="brands-shell" ref={brandsRef}>
-        <h2 className="explore">Explore Brands</h2>
-        <div className="brands-row">
-          {BRANDS.map((b) => (
-            <div className="brand-card" key={b.name}>
-              <div className="brand-card-inner">
-                <Link to={`/brand/${slugify(b.name)}`}>
-                  <img
-                    src={b.src}
-                    alt={b.name}
-                    className="brand-grid-logo"
-                  />
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+    <section className="brands-shell" ref={brandsRef}>
+  <h2 className="explore">Explore by Brand</h2>
+  <p className="explore-sub">
+    Choose from top automobile manufacturers worldwide
+  </p>
+
+  <div className="brands-grid">
+    {BRANDS.map((b) => (
+      <Link
+        to={`/brand/${slugify(b.name)}`}
+        className="brand-card"
+        key={b.name}
+      >
+        <img src={b.src} alt={b.name} />
+        <span>{b.name}</span>
+      </Link>
+    ))}
+  </div>
+</section>
+
       
 
       {/* RECOMMENDED CARS */}
