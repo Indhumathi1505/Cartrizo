@@ -2,7 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Car;
 import com.example.demo.repository.CarRepository;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,11 @@ import java.util.List;
 public class CarController {
 
     private final CarRepository carRepository;
+    private final ObjectMapper objectMapper;
 
     public CarController(CarRepository carRepository) {
         this.carRepository = carRepository;
+        this.objectMapper = new ObjectMapper();
     }
 
     @GetMapping("/all")
@@ -27,13 +30,17 @@ public class CarController {
         return carRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Car> getCarById(@PathVariable String id) {
+        return carRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping(
-        value = "/add",
-        consumes = "multipart/form-data"
+            value = "/add",
+            consumes = "multipart/form-data"
     )
-
-
-    
     public ResponseEntity<?> addCar(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String bodyType,
@@ -46,13 +53,9 @@ public class CarController {
             @RequestParam(required = false) String description,
             @RequestParam(required = false) String condition,
             @RequestParam(required = false) String exteriorColor,
+            @RequestParam(required = false) String features, // JSON string from frontend
             @RequestParam(required = false) MultipartFile image
     ) {
-
-        System.out.println("title = " + title);
-        System.out.println("year = " + year);
-        System.out.println("price = " + price);
-        System.out.println("image = " + (image != null));
 
         if (title == null || model == null || year == null || price == null || image == null) {
             return ResponseEntity.badRequest().body("Missing required fields");
@@ -71,7 +74,17 @@ public class CarController {
         car.setCondition(condition);
         car.setExteriorColor(exteriorColor);
 
-        // Convert image to Base64 and set it
+        // Parse features JSON
+        try {
+            if (features != null && !features.isEmpty()) {
+                List<String> featureList = objectMapper.readValue(features, new TypeReference<List<String>>() {});
+                car.setFeatures(featureList);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Convert image to Base64
         try {
             String base64Image = Base64.getEncoder().encodeToString(image.getBytes());
             car.setImage(base64Image);

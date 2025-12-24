@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // <-- Import useNavigate
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./UsedCar.css";
 
 export default function UsedCars() {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // <-- Initialize navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -21,14 +21,11 @@ export default function UsedCars() {
       });
   }, []);
 
-  if (loading) {
-    return <p className="loading-text">Loading cars...</p>;
-  }
+  if (loading) return <p className="loading-text">Loading cars...</p>;
 
   return (
     <div className="used-cars-page">
       <h2 className="page-title">Available Used Cars</h2>
-
       <div className="car-grid">
         {cars.length === 0 && <p>No cars available</p>}
 
@@ -36,8 +33,20 @@ export default function UsedCars() {
           <div
             className="car-card"
             key={car.id || car._id}
-            onClick={() => navigate(`/car/${car.id || car._id}`)} // <-- Works now
+            onClick={() => navigate(`/car/${car.id || car._id}`)}
           >
+            {/* Favourite Icon */}
+            <div
+              className="favourite-icon"
+              onClick={(e) => {
+                e.stopPropagation(); // prevent navigation
+                car.isFavourite = !car.isFavourite;
+                setCars([...cars]);
+              }}
+            >
+              {car.isFavourite ? "❤️" : "🤍"}
+            </div>
+
             {/* IMAGE */}
             <div className="car-image-box">
               {car.image ? (
@@ -46,14 +55,16 @@ export default function UsedCars() {
                   alt={car.title}
                 />
               ) : (
-                <div className="no-image">No Image</div>
+                <img src="/assets/default-car.png" alt="No Image" />
               )}
             </div>
 
             {/* DETAILS */}
             <div className="car-details">
               <h3 className="car-name">{car.title}</h3>
-              <p className="car-price">Rs. {car.price}</p>
+              <p className="car-price">
+                Rs. {Number(car.price).toLocaleString("en-IN")}
+              </p>
               <p className="car-location">{car.condition || "Used"}</p>
               <p className="car-specs">
                 {car.year || "2021"} • {car.fuelType || "Petrol"} •{" "}

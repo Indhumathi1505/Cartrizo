@@ -20,74 +20,78 @@ export default function SellCar() {
     price: "",
     condition: "New",
     imageFile: null,
+    features: [],
   });
 
-  // Handle text inputs, radio, and select
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    if (type === "radio") {
-      setCar({ ...car, [name]: value });
-    } else {
-      setCar({ ...car, [name]: value });
-    }
+    const { name, value } = e.target;
+    setCar({ ...car, [name]: value });
   };
 
-  // Handle file input
+  const handleFeatureChange = (feature) => {
+    setCar((prev) => ({
+      ...prev,
+      features: prev.features.includes(feature)
+        ? prev.features.filter((f) => f !== feature)
+        : [...prev.features, feature],
+    }));
+  };
+
   const handleFileChange = (e) => {
     setCar({ ...car, imageFile: e.target.files[0] });
   };
 
-  //
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const formData = new FormData();
-    formData.append("title", car.title);
-    formData.append("bodyType", car.bodyType);
-    formData.append("model", car.model);
-    formData.append("year", Number(car.year));
-    formData.append("fuelType", car.fuelType);
-   formData.append("price", Number(car.price));
-formData.append("mileage", Number(car.mileage));
-formData.append("engineCapacity", Number(car.engineCapacity));
-    formData.append("description", car.description);
-    formData.append("condition", car.condition);
-    formData.append("exteriorColor", car.exteriorColor);
-    if (car.imageFile) formData.append("image", car.imageFile);
+    if (!car.imageFile) {
+      alert("Please select an image");
+      return;
+    }
 
-    const res = await fetch("http://localhost:8080/api/cars/add", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const formData = new FormData();
+      formData.append("title", car.title);
+      formData.append("bodyType", car.bodyType || "");
+      formData.append("model", car.model);
+      formData.append("year", Number(car.year));
+      formData.append("fuelType", car.fuelType || "");
+      formData.append("price", Number(car.price));
+      formData.append("mileage", Number(car.mileage) || 0);
+      formData.append("engineCapacity", Number(car.engineCapacity) || 0);
+      formData.append("description", car.description || "");
+      formData.append("condition", car.condition || "");
+      formData.append("exteriorColor", car.exteriorColor || "");
+      formData.append("features", JSON.stringify(car.features));
+      formData.append("image", car.imageFile);
 
-    // If your backend sends plain text
-    const text = await res.text(); 
-    console.log("Backend response:", text);
+      const res = await fetch("http://localhost:8080/api/cars/add", {
+        method: "POST",
+        body: formData,
+      });
 
-    if (!res.ok) throw new Error(text || "Failed to upload");
+      const data = await res.json();
+      console.log("Backend response:", data);
 
-    alert("Car uploaded successfully!");
-    navigate("/used-cars");
+      if (!res.ok) throw new Error(JSON.stringify(data));
 
-  } catch (err) {
-    console.error("Upload failed:", err);
-    alert("Upload failed. Please check the console.");
-  }
-};
-
+      alert("Car uploaded successfully!");
+      navigate("/used-cars");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("Upload failed. Check console for details.");
+    }
+  };
 
   return (
     <div className="sell-layout">
       <Navbar />
-
       <div className="sell-page">
         <form className="sell-form" onSubmit={handleSubmit}>
           {/* LEFT */}
           <div className="sell-left">
             <h2>Sell Your Car</h2>
             <p className="breadcrumb">Homepage - Sell</p>
-
             <div className="sell-images">
               <img src={sellimage} alt="car" />
             </div>
@@ -97,7 +101,6 @@ formData.append("engineCapacity", Number(car.engineCapacity));
           <div className="sell-right">
             <section>
               <h3>Car Details</h3>
-
               <div className="row">
                 <input
                   name="title"
@@ -106,7 +109,6 @@ formData.append("engineCapacity", Number(car.engineCapacity));
                   onChange={handleChange}
                   required
                 />
-
                 <div className="radio-group">
                   <label>
                     <input
@@ -143,6 +145,7 @@ formData.append("engineCapacity", Number(car.engineCapacity));
                   placeholder="Model"
                   value={car.model}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -152,6 +155,7 @@ formData.append("engineCapacity", Number(car.engineCapacity));
                   placeholder="Year"
                   value={car.year}
                   onChange={handleChange}
+                  required
                 />
                 <input
                   name="exteriorColor"
@@ -210,43 +214,48 @@ formData.append("engineCapacity", Number(car.engineCapacity));
                   "Airbags",
                 ].map((f) => (
                   <label className="feature-item" key={f}>
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      checked={car.features.includes(f)}
+                      onChange={() => handleFeatureChange(f)}
+                    />
                     <span>{f}</span>
                   </label>
                 ))}
               </div>
             </section>
 
-            <section>
-              <h3>Price</h3>
-              <input
-                name="price"
-                placeholder="Full Price"
-                value={car.price}
-                onChange={handleChange}
-              />
-            </section>
+           <section>
+  <h3>Price</h3>
+  <input
+    type="range"
+    name="price"
+    min="200000"
+    max="5000000"
+    step="50000"
+    value={car.price}
+    onChange={handleChange}
+  />
+  <p>Selected Price: ₹{car.price}</p>
+</section>
+
 
             <section>
               <h3>Images & Video</h3>
-
               <div className="image-upload-box">
                 <label htmlFor="imageUpload" className="upload-label">
                   <div className="upload-plus">+</div>
                   <span>Upload your image</span>
                 </label>
                 <input
-  type="file"
-  id="imageUpload"
-  accept="image/*"
-  required
-  hidden
-  onChange={handleFileChange}
-/>
-
-               
+                  type="file"
+                  id="imageUpload"
+                  accept="image/*"
+                  required
+                  hidden
+                  onChange={handleFileChange}
+                />
               </div>
-
               {car.imageFile && (
                 <img
                   src={URL.createObjectURL(car.imageFile)}
