@@ -83,12 +83,22 @@ export default function CarDetails() {
             </div>
           </div>
 
-          <div className="dealer-info">
-            <h3>Dealer Info</h3>
-            <p><strong>Name:</strong> {car.dealerName}</p>
-            <p><strong>Phone:</strong> {car.dealerPhone}</p>
-            <p><strong>Email:</strong> {car.dealerEmail}</p>
-          </div>
+         <div className="dealer-info-form">
+  <h3>Dealer Info</h3>
+  <div className="form-group">
+    <label>Name</label>
+    <input type="text" value={car.dealerName} readOnly />
+  </div>
+  <div className="form-group">
+    <label>Phone</label>
+    <input type="text" value={car.dealerPhone} readOnly />
+  </div>
+  <div className="form-group">
+    <label>Email</label>
+    <input type="text" value={car.dealerEmail} readOnly />
+  </div>
+</div>
+
         </div>
       </div>
     </div>
