@@ -5,7 +5,7 @@
 
 .about-container {
   min-height: 100vh;
-  background: #5f5a59;
+  background: #0b0f14;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@
 
 .about-card {
   width: 880px;
-  background: #6a6a6a;
+  background: #0b0f14;
   padding: 45px 55px;
   color: #ffffff;
 }
