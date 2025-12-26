@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
+
 
 @Document(collection = "cars")
 public class Car {
@@ -15,8 +17,9 @@ public class Car {
     private Integer year;
     private String fuelType;
     private Integer mileage;
-    private Integer engineCapacity;
+    private int engineCapacity;
     private Double price;
+     private List<String> features;
     private String description;
     private String condition;
     private String exteriorColor;
@@ -122,6 +125,12 @@ public class Car {
 
     public String getImage() {
         return image;
+    }
+      public List<String> getFeatures() {
+        return features;
+    }
+    public void setFeatures(List<String> features) {
+        this.features = features;
     }
 
     public void setImage(String image) {

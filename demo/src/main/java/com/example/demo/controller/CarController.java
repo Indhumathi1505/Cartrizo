@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Car;
 import com.example.demo.repository.CarRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,11 +16,9 @@ import java.util.List;
 public class CarController {
 
     private final CarRepository carRepository;
-    private final ObjectMapper objectMapper;
 
     public CarController(CarRepository carRepository) {
         this.carRepository = carRepository;
-        this.objectMapper = new ObjectMapper();
     }
 
     @GetMapping("/all")
@@ -37,29 +33,22 @@ public class CarController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping(
-            value = "/add",
-            consumes = "multipart/form-data"
-    )
+    @PostMapping(value = "/add", consumes = "multipart/form-data")
     public ResponseEntity<?> addCar(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String bodyType,
-            @RequestParam(required = false) String model,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) String fuelType,
-            @RequestParam(required = false) Integer mileage,
-            @RequestParam(required = false) Integer engineCapacity,
-            @RequestParam(required = false) Double price,
-            @RequestParam(required = false) String description,
-            @RequestParam(required = false) String condition,
-            @RequestParam(required = false) String exteriorColor,
-            @RequestParam(required = false) String features, // JSON string from frontend
-            @RequestParam(required = false) MultipartFile image
+            @RequestParam String title,
+            @RequestParam String bodyType,
+            @RequestParam String model,
+            @RequestParam Integer year,
+            @RequestParam String fuelType,
+            @RequestParam Integer mileage,
+            @RequestParam Integer engineCapacity,
+            @RequestParam Double price,
+            @RequestParam String description,
+            @RequestParam String condition,
+            @RequestParam String exteriorColor,
+            @RequestParam(required = false) List<String> features,
+            @RequestParam MultipartFile image
     ) {
-
-        if (title == null || model == null || year == null || price == null || image == null) {
-            return ResponseEntity.badRequest().body("Missing required fields");
-        }
 
         Car car = new Car();
         car.setTitle(title);
@@ -74,23 +63,17 @@ public class CarController {
         car.setCondition(condition);
         car.setExteriorColor(exteriorColor);
 
-        // Parse features JSON
-        try {
-            if (features != null && !features.isEmpty()) {
-                List<String> featureList = objectMapper.readValue(features, new TypeReference<List<String>>() {});
-                car.setFeatures(featureList);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        // ✅ FEATURES
+        if (features != null && !features.isEmpty()) {
+            car.setFeatures(features);
         }
 
-        // Convert image to Base64
+        // ✅ IMAGE
         try {
             String base64Image = Base64.getEncoder().encodeToString(image.getBytes());
             car.setImage(base64Image);
         } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Failed to upload image");
+            return ResponseEntity.status(500).body("Image upload failed");
         }
 
         return ResponseEntity.ok(carRepository.save(car));

@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import SellCar from "./SellCars/SellCar";
 import UsedCar from "./UsedCars/UsedCar";
 import CarDetails from "./pages/CarDetails";
+import Favourites from "./pages/Favourites";
 
 // Admin components
 import AdminDashboard from "./Admin/Admin";
@@ -30,6 +31,7 @@ function App() {
       <Route path="/sell-cars" element={<SellCar />} />
       <Route path="/used-cars" element={<UsedCar />} />
       <Route path="/car/:id" element={<CarDetails />} />
+      <Route path="/favourites" element={<Favourites />} />
 
       {/* Admin routes */}
       {/* Redirect /admin → /admin/login */}

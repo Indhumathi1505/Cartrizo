@@ -62,7 +62,10 @@ export default function SellCar() {
       formData.append("description", car.description || "");
       formData.append("condition", car.condition || "");
       formData.append("exteriorColor", car.exteriorColor || "");
-      formData.append("features", JSON.stringify(car.features));
+      car.features.forEach((feature) => {
+  formData.append("features", feature);
+});
+
       formData.append("image", car.imageFile);
 
       const res = await fetch("http://localhost:8080/api/cars/add", {
